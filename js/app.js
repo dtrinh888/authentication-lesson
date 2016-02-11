@@ -32,4 +32,11 @@ angular.module('authenticationApp', ['ngRoute'])
 	//above facotry will not work which is why we need to tell angular
 	//to use the interceptor in this config block
 	$httpProvider.interceptors.push('authenicationInterceptor');
+})
+.controller('LoginController', function(userSession){
+	this.login = function(username, password) {
+		if(username == 'user' && password == 'password'){
+			userSession.loggedIn = true;
+		}
+	};
 });
