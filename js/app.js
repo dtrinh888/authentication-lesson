@@ -22,7 +22,16 @@ angular.module('authenticationApp', ['ngRoute'])
 
 			//only redirect if attempting access url with "api" in it
 			if(request.url.match(/api/) && !userSession.loggedIn) {
-				$location.path('/login');
+				//when users reach the login page we'll use $location.search()
+				//to get the previous page and upon successful login they get
+				//redirected to previous page
+				var previousPage = $location.path();
+				//used the $location.search() method to set a key value pair of
+				//"previous" along with previous page's URL. This info will be
+				//accessible in the LoginController
+				$location.path('/login').search({
+					previous: previousPage
+				});
 			}
 			return request;
 		}
@@ -33,10 +42,29 @@ angular.module('authenticationApp', ['ngRoute'])
 	//to use the interceptor in this config block
 	$httpProvider.interceptors.push('authenicationInterceptor');
 })
-.controller('LoginController', function(userSession){
-	this.login = function(username, password) {
+
+
+//.controller("LoginController", function(userSession) {
+//    this.login = function(username, password) {
+//        if(username == 'user' && password == 'password') {
+//            userSession.loggedIn = true;
+//        }
+//    }
+//});
+//code commented out above will log users in but then they will have to 
+//manually access the page they were previously trying to access
+//users should be automatically redirected to the page they trying to visit
+//before they are asked to login so we would have to mod the controller and 
+//interceptor to track and redirect to the previous page
+.controller('LoginController', function(userSession, $route, $location){
+	var ctrl = this;
+	ctrl.previousPage = $location.search().previous;
+	ctrl.login = function(username, password){
 		if(username == 'user' && password == 'password'){
 			userSession.loggedIn = true;
+			$location.path(previousPage);
+		} else {
+			this.loginFailed = true;
 		}
 	};
 });
