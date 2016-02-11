@@ -1,0 +1,10 @@
+<form name="loginForm" ng-controller="LoginController as ctrl" ng-submit="loginForm.$valid && ctrl.login(username, password)">
+	<div class="field">
+		<label>Username: </label>
+		<input type="text" ng-model="username" name="username" />
+	</div>
+	<div class="field">
+		<label>Password: </label>
+		<input type="password" ng-model="password" name="password" />
+	</div>
+</form>
